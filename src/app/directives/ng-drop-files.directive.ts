@@ -7,8 +7,9 @@ import {  Directive,
 import { FileItem } from '../models/file-item';
 
 @Directive({
-  selector: '[appNgDropFiles]'
+  selector: '[appNgDropFiles]',
 })
+
 export class NgDropFilesDirective {
 
   @Input() archivos: FileItem[] = [];
@@ -21,6 +22,7 @@ export class NgDropFilesDirective {
   public onDragEnter( event: any ) {
 
     this.mouseSobre.emit( true );
+    this._prevenirDetener( event );
 
   }
 
@@ -29,6 +31,55 @@ export class NgDropFilesDirective {
   public onDragLeave( event: any ) {
 
     this.mouseSobre.emit( false );
+
+  }
+
+  // Al soltarse el mouse al dejarlo encima
+  @HostListener('drop', ['$event'] )
+  public onDrop( event: any ) {
+
+
+    const transferencia = this._getTransferencia( event );
+
+    if ( !transferencia ) {
+
+      return; // Si no hay nada que transferir, no se hace nada (se sale)
+
+    }
+
+    this._extraerArchivos( transferencia.files);
+    this._prevenirDetener( event );
+
+    this.mouseSobre.emit( false );
+
+  }
+
+
+  // Obtener la trasnferencia de archivos, dependiendo el navegador es como lo tiene que devolver
+  private _getTransferencia( event: any ) {
+
+    return event.dataTransfer ? event.dataTransfer : event.originalEvent.dataTransfer;
+
+  }
+
+  // Extraer los archivos de lo droppeado
+  private _extraerArchivos( archivosLista: FileList ) {
+
+    // Tomar las propiedades del archivo para convertir en un arreglo
+    // tslint:disable-next-line: forin
+    for ( const propiedad in Object.getOwnPropertyNames( archivosLista ) ) {
+
+      const archivoTemporal = archivosLista[propiedad];
+
+      if ( this._archivoPuedeSerCargado( archivoTemporal ) ) {
+
+        const nuevoArchivo = new FileItem( archivoTemporal );
+        this.archivos.push( nuevoArchivo );
+
+      }
+
+    }
+
 
   }
 

@@ -7,6 +7,7 @@
 
     <!-- div con directiva personalizada para detectar elemento arrastrado -->
     <div  appNgDropFiles
+          [archivos]="archivos"
           (mouseSobre)="estaSobreElemento = $event"
           [ngClass]="{'file-over': estaSobreElemento}"
           class="well drop-zone">
@@ -25,7 +26,7 @@
 
     <!-- Acciones -->
     <button (click)="cargarImagenes()" [disabled]="archivos.length === 0" class="btn btn-success">Cargar a Firebase</button>
-    <button class="btn btn-danger">Limpiar</button>
+    <button (click)="limpiarArchivos()" class="btn btn-danger">Limpiar</button>
 
     <!-- Tabla de información de archivos subidos / subiendose -->
     <table class="table">
@@ -42,14 +43,14 @@
 
 
       <tbody>
-        <tr>
-          <td>XYZ</td>
-          <td>12 MB</td>
+        <tr *ngFor="let archivo of archivos">
+          <td>{{ archivo.nombreArchivo }}</td>
+          <td>{{ archivo.archivo.size / 1024 / 1024 | number: '.2-2' }} MB</td>
 
           <!-- Barra progreso -->
           <td>
             <div class="progress">
-              <div class="progress-bar" role="progressbar" style="width: 25%"></div>
+              <div class="progress-bar" role="progressbar" [ngStyle]="{'width': archivo.progress + '%'}"></div>
             </div>
           </td>
 

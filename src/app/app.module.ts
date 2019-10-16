@@ -20,6 +20,9 @@ import { NgDropFilesDirective } from './directives/ng-drop-files.directive';
     CargaComponent,
     NgDropFilesDirective
   ],
+  exports: [
+    NgDropFilesDirective
+  ],
   imports: [
     BrowserModule,
     APP_ROUTES,
