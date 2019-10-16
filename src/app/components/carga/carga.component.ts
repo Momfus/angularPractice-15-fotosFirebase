@@ -9,7 +9,9 @@ import { CargaImagenesService } from '../../services/carga-imagenes.service';
 })
 export class CargaComponent implements OnInit {
 
+  // tslint:disable: no-inferrable-types
 
+  estaSobreElemento: boolean = false;
   archivos: FileItem[] = [];
 
   constructor(
